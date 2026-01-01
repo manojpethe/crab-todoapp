@@ -9,7 +9,7 @@ struct TodoItem {
 }
 
 fn main() {
-    println!("Hello, welcome to todo app!");
+    println!("=Hello, welcome to todo app!=");
     let now: DateTime<Local> = Local::now();
     println!("Today is: {}", now); // Prints: Current Date & Time: 2024-01-01 10:00:00 +05:30 (example)
     let mut todo_list: Vec<TodoItem> = Vec::new();
