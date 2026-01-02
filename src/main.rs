@@ -36,6 +36,9 @@ fn process_user_command(todo_list: &mut Vec<TodoItem>) -> ControlFlow<()> {
         "add" => add_todo_item(todo_list),
         // add todo Item
         "remove" => remove_todo_item(todo_list),
+        // remove todo Item
+        "update" => update_todo_item(todo_list),
+        // update todo Item
         "print" => {let copy_of_todo = todo_list.clone(); print_todo_list(copy_of_todo)},
         // print all todo items in vector
         "quit" => return ControlFlow::Break(()),
@@ -115,7 +118,7 @@ fn get_status_string(item: &TodoItem) -> String {
 
 fn remove_todo_item(todo_list: &mut Vec<TodoItem>) {
     let mut user_input = String::new();
-    println!("Enter serial number of Task to remove:");
+    println!("Enter serial number of Task:");
     read_user_input(&mut user_input);
     user_input = user_input.trim().to_string();
     let index_number = user_input.parse::<usize>().unwrap();
@@ -125,4 +128,27 @@ fn remove_todo_item(todo_list: &mut Vec<TodoItem>) {
     } else {
         println!("Sorry, there are only {} Items in the list.",todo_list.len())
     }
+}
+
+fn update_todo_item(todo_list: &mut Vec<TodoItem>) {
+    let mut user_input = String::new();
+    println!("Enter serial number of Task:");
+    read_user_input(&mut user_input);
+    user_input = user_input.trim().to_string();
+    let index_number = user_input.parse::<usize>().unwrap();
+
+    println!("Shall I mark it as done? (y/n)");
+    if index_number <= todo_list.len() {
+        let mut user_confirmation = String::new();
+        read_user_input(&mut user_confirmation);
+        if user_confirmation.trim().to_string() == "y".to_string() {
+            todo_list[index_number-1].status = true;
+            println!("Marked item as Done....!");
+        } else {
+            println!(" response is {user_confirmation}");
+        }
+    } else {
+        println!("Sorry, there are only {} Items in the list.",todo_list.len())
+    }
+
 }
