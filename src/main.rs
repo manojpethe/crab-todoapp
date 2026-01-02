@@ -1,4 +1,4 @@
-use std::{io, ops::ControlFlow};
+use std::{io, ops::ControlFlow, usize};
 use chrono::{Local, DateTime};
 
 #[derive(Clone)]
@@ -35,6 +35,7 @@ fn process_user_command(todo_list: &mut Vec<TodoItem>) -> ControlFlow<()> {
         // Match a single value
         "add" => add_todo_item(todo_list),
         // add todo Item
+        "remove" => remove_todo_item(todo_list),
         "print" => {let copy_of_todo = todo_list.clone(); print_todo_list(copy_of_todo)},
         // print all todo items in vector
         "quit" => return ControlFlow::Break(()),
@@ -78,14 +79,14 @@ fn read_user_input(user_input: &mut String) {
 fn print_todo_list(todo_list: Vec<TodoItem>) {
     // println!("{:?}", todo_list);
     let now: DateTime<Local> = Local::now();
-
+    let mut counter = 1;
     println!("\n\n== List of Todo Items ==");
     for item in todo_list {
-        // let short_datetime = item.cdate.time();
         let diff = get_time_diff_string(now, &item);
         let status = get_status_string(&item);
         
-        println!("{} ago \t| {}\t\t - {}", diff, item.task, status);
+        println!("{}. {} ago \t| {}\t\t - {}", counter, diff, item.task, status);
+        counter+=1;
     }
 }
 
@@ -110,4 +111,18 @@ fn get_status_string(item: &TodoItem) -> String {
         status = "Done".to_string()
     }
     status
+}
+
+fn remove_todo_item(todo_list: &mut Vec<TodoItem>) {
+    let mut user_input = String::new();
+    println!("Enter serial number of Task to remove:");
+    read_user_input(&mut user_input);
+    user_input = user_input.trim().to_string();
+    let index_number = user_input.parse::<usize>().unwrap();
+    if index_number < todo_list.len() {
+        todo_list.remove(index_number-1);
+        println!("Done......");
+    } else {
+        println!("Sorry, there are only {} Items in the list.",todo_list.len())
+    }
 }
