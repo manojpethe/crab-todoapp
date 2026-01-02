@@ -6,6 +6,7 @@ use chrono::{Local, DateTime};
 struct TodoItem {
     task: String,
     status: bool,
+    cdate: DateTime<Local>
 }
 
 fn main() {
@@ -47,10 +48,12 @@ fn add_todo_item(todo_list: &mut Vec<TodoItem>) {
     let mut user_input = String::new();
     println!("Enter Task Description:");
     read_user_input(&mut user_input);
+    let task_create_date: DateTime<Local> = Local::now();
 
     let new_todo = TodoItem {
         task: String::from(user_input.trim()),
         status: false,
+        cdate: task_create_date
     };
 
     todo_list.push(new_todo);
@@ -77,7 +80,8 @@ fn print_todo_list(todo_list: Vec<TodoItem>) {
 
     println!("\n\n== List of Todo Items ==");
     for item in todo_list {
-        println!("{}\t\t - {}", item.task, item.status);
+        let short_datetime = item.cdate.time();
+        println!("{} | {}\t\t - {}", short_datetime, item.task, item.status);
         // println!("{:?}", item);
     }
 }

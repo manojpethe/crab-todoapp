@@ -1,1 +1,1 @@
-hello World!
+simple command line TodoApp in rust
