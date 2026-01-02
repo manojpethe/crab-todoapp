@@ -76,13 +76,38 @@ fn read_user_input(user_input: &mut String) {
 }
 
 fn print_todo_list(todo_list: Vec<TodoItem>) {
-    println!("{:?}", todo_list);
+    // println!("{:?}", todo_list);
+    let now: DateTime<Local> = Local::now();
 
     println!("\n\n== List of Todo Items ==");
     for item in todo_list {
-        let short_datetime = item.cdate.time();
-        println!("{} | {}\t\t - {}", short_datetime, item.task, item.status);
-        // println!("{:?}", item);
+        // let short_datetime = item.cdate.time();
+        let diff = get_time_diff_string(now, &item);
+        let status = get_status_string(&item);
+        
+        println!("{} ago \t| {}\t\t - {}", diff, item.task, status);
     }
 }
 
+fn get_time_diff_string(now: DateTime<Local>, item: &TodoItem) -> String {
+    let mut diff_string: String = "".to_string();
+    let diff = (now - item.cdate).num_seconds();
+    
+    if diff > 60 {
+        diff_string = (diff / 60).to_string() + "min";
+    } else {
+        diff_string = diff.to_string() + "s"
+    }
+
+    diff_string
+}
+
+fn get_status_string(item: &TodoItem) -> String {
+    let mut status: String = "".to_string();
+    if item.status == false { 
+        status = "Pending".to_string();
+    } else {
+        status = "Done".to_string()
+    }
+    status
+}
