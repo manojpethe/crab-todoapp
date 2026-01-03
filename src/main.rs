@@ -1,5 +1,7 @@
 use std::{io, ops::ControlFlow, usize};
 use chrono::{Local, DateTime};
+use todoapp::common::greet;
+use todoapp::common::read_user_input;
 
 #[derive(Clone)]
 #[derive(Debug)]
@@ -11,6 +13,7 @@ struct TodoItem {
 
 fn main() {
     println!("=Hello, welcome to todo app!=");
+    greet("Manoj".to_string(),"En".to_string());
     let now: DateTime<Local> = Local::now();
     println!("Today is: {}", now); // Prints: Current Date & Time: 2024-01-01 10:00:00 +05:30 (example)
     let mut todo_list: Vec<TodoItem> = Vec::new();
@@ -63,21 +66,7 @@ fn add_todo_item(todo_list: &mut Vec<TodoItem>) {
     todo_list.push(new_todo);
 }
 
-fn read_user_input(user_input: &mut String) {
-    loop{
-    io::stdin()
-        .read_line(user_input)
-        .expect("Failed to read line");
 
-        if user_input.trim().len() == 0 {
-            println!("You didnt enter anything ");
-            continue;
-        } else {
-            break;
-        }
-
-    }
-}
 
 fn print_todo_list(todo_list: Vec<TodoItem>) {
     // println!("{:?}", todo_list);
