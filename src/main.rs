@@ -51,7 +51,7 @@ fn process_user_command(todo_list: &mut Vec<TodoItem>) -> ControlFlow<()> {
         // print all todo items in vector
         "save" => save_to_file(convert_to_json(todo_list)),
         // save todo list in a file
-        "load" => load_data_from_file(),
+        "load" => load_to_todo_list(convert_from_json_to_vetor( load_from_file()),todo_list),
         // load from file
         "quit" => return ControlFlow::Break(()),
         _ => println!("invalid command"),
@@ -159,13 +159,16 @@ fn save_to_file(data: String){
     println!("File has been saved {}",path_to_save_file);
 }
 
-fn load_data_from_file() {
+fn load_from_file()-> String {
     let contents:String = fs::read_to_string(path_to_save_file).unwrap();
-    println!("{}",contents);
-    // contents
+    contents
 }
 
-fn convert_from_json(data: String)-> Vec<TodoItem>{
+fn convert_from_json_to_vetor(data: String)-> Vec<TodoItem>{
     let deserialized_data = serde_json::from_str(data.as_str()).unwrap();
     deserialized_data
+}
+
+fn load_to_todo_list(mut data: Vec<TodoItem>, todo_list: &mut Vec<TodoItem>) {
+    todo_list.append(&mut data);
 }
