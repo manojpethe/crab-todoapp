@@ -51,6 +51,8 @@ fn process_user_command(todo_list: &mut Vec<TodoItem>) -> ControlFlow<()> {
         // print all todo items in vector
         "save" => save_to_file(convert_to_json(todo_list)),
         // save todo list in a file
+        "load" => load_data_from_file(),
+        // load from file
         "quit" => return ControlFlow::Break(()),
         _ => println!("invalid command"),
         // catch-all arm
@@ -155,4 +157,15 @@ fn convert_to_json(data: &mut Vec<TodoItem> )-> String{
 fn save_to_file(data: String){
     fs::write(path_to_save_file,data).unwrap();
     println!("File has been saved {}",path_to_save_file);
+}
+
+fn load_data_from_file() {
+    let contents:String = fs::read_to_string(path_to_save_file).unwrap();
+    println!("{}",contents);
+    // contents
+}
+
+fn convert_from_json(data: String)-> Vec<TodoItem>{
+    let deserialized_data = serde_json::from_str(data.as_str()).unwrap();
+    deserialized_data
 }
