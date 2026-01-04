@@ -2,13 +2,17 @@ use std::{io, ops::ControlFlow, usize};
 use chrono::{Local, DateTime};
 use todoapp::common::greet;
 use todoapp::common::read_user_input;
+use serde::{Deserialize, Serialize};
+use serde_json::Result;
 
+#[derive(Serialize, Deserialize)]
 #[derive(Clone)]
 #[derive(Debug)]
+// #[derive(serde::Serialize, serde::Deserialize, Debug,Clone)]
 struct TodoItem {
-    task: String,
-    status: bool,
-    cdate: DateTime<Local>
+    pub task: String,
+    pub status: bool,
+    pub cdate: DateTime<Local>
 }
 
 fn main() {
@@ -44,6 +48,7 @@ fn process_user_command(todo_list: &mut Vec<TodoItem>) -> ControlFlow<()> {
         // update todo Item
         "print" => {let copy_of_todo = todo_list.clone(); print_todo_list(copy_of_todo)},
         // print all todo items in vector
+        "save" => save_to_file(todo_list),
         "quit" => return ControlFlow::Break(()),
         _ => println!("invalid command"),
         // catch-all arm
@@ -65,8 +70,6 @@ fn add_todo_item(todo_list: &mut Vec<TodoItem>) {
 
     todo_list.push(new_todo);
 }
-
-
 
 fn print_todo_list(todo_list: Vec<TodoItem>) {
     // println!("{:?}", todo_list);
@@ -140,4 +143,9 @@ fn update_todo_item(todo_list: &mut Vec<TodoItem>) {
         println!("Sorry, there are only {} Items in the list.",todo_list.len())
     }
 
+}
+
+fn save_to_file(data: &mut Vec<TodoItem> ){
+    let serialized_data = serde_json::to_string(&data).unwrap();
+    println!("here you go: {}",serialized_data);
 }
