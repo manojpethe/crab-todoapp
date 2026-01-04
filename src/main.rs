@@ -1,4 +1,4 @@
-use std::{io, ops::ControlFlow, usize};
+use std::{io, ops::ControlFlow, usize, fs};
 use chrono::{Local, DateTime};
 use todoapp::common::greet;
 use todoapp::common::read_user_input;
@@ -14,6 +14,7 @@ struct TodoItem {
     pub status: bool,
     pub cdate: DateTime<Local>
 }
+const path_to_save_file: &str = "todoapp.json";
 
 fn main() {
     println!("=Hello, welcome to todo app!=");
@@ -48,7 +49,8 @@ fn process_user_command(todo_list: &mut Vec<TodoItem>) -> ControlFlow<()> {
         // update todo Item
         "print" => {let copy_of_todo = todo_list.clone(); print_todo_list(copy_of_todo)},
         // print all todo items in vector
-        "save" => save_to_file(todo_list),
+        "save" => save_to_file(convert_to_json(todo_list)),
+        // save todo list in a file
         "quit" => return ControlFlow::Break(()),
         _ => println!("invalid command"),
         // catch-all arm
@@ -145,7 +147,12 @@ fn update_todo_item(todo_list: &mut Vec<TodoItem>) {
 
 }
 
-fn save_to_file(data: &mut Vec<TodoItem> ){
+fn convert_to_json(data: &mut Vec<TodoItem> )-> String{
     let serialized_data = serde_json::to_string(&data).unwrap();
-    println!("here you go: {}",serialized_data);
+    serialized_data
+}
+
+fn save_to_file(data: String){
+    fs::write(path_to_save_file,data).unwrap();
+    println!("File has been saved {}",path_to_save_file);
 }
