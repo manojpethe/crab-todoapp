@@ -1,3 +1,5 @@
+use std::io::ErrorKind;
+use std::fs::File;
 use std::{io, ops::ControlFlow, usize, fs};
 use chrono::{Local, DateTime};
 use todoapp::common::greet;
@@ -164,7 +166,20 @@ fn save_to_file(data: String){
 }
 
 fn load_from_file()-> String {
-    let contents:String = fs::read_to_string(PATH_TO_SAVE_FILE).unwrap();
+    let result = fs::read_to_string(PATH_TO_SAVE_FILE);
+    let contents = match result {
+        Ok(file) => file,
+        Err(error) => 
+            match error.kind() {
+            ErrorKind::NotFound => match File::create(PATH_TO_SAVE_FILE) {
+                Ok(_fc) => String::from("[]"),
+                Err(e) => panic!("Problem creating the file: {e:?}"),
+            },
+            _ => {
+                panic!("Problem opening the file: {error:?}");
+            }
+        }
+    };
     contents
 }
 
@@ -174,5 +189,7 @@ fn convert_from_json_to_vetor(data: String)-> Vec<TodoItem>{
 }
 
 fn load_to_todo_list(mut data: Vec<TodoItem>, todo_list: &mut Vec<TodoItem>) {
+    println!("Loading data from file...");
+    println!("Loaded {} items.", data.len());
     todo_list.append(&mut data);
 }
