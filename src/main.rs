@@ -3,7 +3,7 @@ use chrono::{Local, DateTime};
 use todoapp::common::greet;
 use todoapp::common::read_user_input;
 use serde::{Deserialize, Serialize};
-use serde_json::Result;
+// use serde_json::Result;
 
 #[derive(Serialize, Deserialize)]
 #[derive(Clone)]
@@ -14,7 +14,7 @@ struct TodoItem {
     pub status: bool,
     pub cdate: DateTime<Local>
 }
-const path_to_save_file: &str = "todoapp.json";
+const PATH_TO_SAVE_FILE: &str = "todoapp.json";
 
 fn main() {
     println!("=Hello, welcome to todo app!=");
@@ -90,11 +90,15 @@ fn print_todo_list(todo_list: Vec<TodoItem>) {
 }
 
 fn get_time_diff_string(now: DateTime<Local>, item: &TodoItem) -> String {
-    let mut diff_string: String = "".to_string();
+    let diff_string: String;
     let diff = (now - item.cdate).num_seconds();
     
-    if diff > 60 {
-        diff_string = (diff / 60).to_string() + "min";
+    if diff > 86400 {
+        diff_string = (diff / 86400).to_string() + " days";
+    } else if diff > 3600 {
+        diff_string = (diff / 3600).to_string() + " hours";
+    } else if diff > 60 {
+        diff_string = (diff / 60).to_string() + " min";
     } else {
         diff_string = diff.to_string() + "s"
     }
@@ -103,7 +107,7 @@ fn get_time_diff_string(now: DateTime<Local>, item: &TodoItem) -> String {
 }
 
 fn get_status_string(item: &TodoItem) -> String {
-    let mut status: String = "".to_string();
+    let status: String;
     if item.status == false { 
         status = "Pending".to_string();
     } else {
@@ -155,12 +159,12 @@ fn convert_to_json(data: &mut Vec<TodoItem> )-> String{
 }
 
 fn save_to_file(data: String){
-    fs::write(path_to_save_file,data).unwrap();
-    println!("File has been saved {}",path_to_save_file);
+    fs::write(PATH_TO_SAVE_FILE,data).unwrap();
+    println!("File has been saved {}",PATH_TO_SAVE_FILE);
 }
 
 fn load_from_file()-> String {
-    let contents:String = fs::read_to_string(path_to_save_file).unwrap();
+    let contents:String = fs::read_to_string(PATH_TO_SAVE_FILE).unwrap();
     contents
 }
 
